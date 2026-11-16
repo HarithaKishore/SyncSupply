@@ -1,4 +1,8 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SyncSupply
+
+SyncSupply is a construction-materials catalog and storefront built with [Next.js](https://nextjs.org), Firebase Firestore, and Google sign-in through NextAuth.
+
+The storefront uses a responsive blue-and-slate theme, shared navigation and footer, and keyboard-accessible catalog links and sign-in dialog.
 
 ## Getting Started
 

@@ -1,188 +1,80 @@
-
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import LoadingPage from "./components/LoadingPage";
-import LoginPopup from "./components/LoginPopup";
+import Link from "next/link";
+import Storefront, { StoreIcon } from "./components/Storefront";
 import { useCategories } from "@/lib/hooks/useCatalogs";
 
 export default function Home() {
-  const [showLoading, setShowLoading] = useState(true);
   const { categories, loading } = useCategories();
-  const router = useRouter();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (showLoading) {
-    return <LoadingPage />;
-  }
 
   return (
-    <main 
-      className="min-h-screen flex flex-col"
-      style={{
-        backgroundImage: `linear-gradient(135deg, #e3f2fd 0%, #b3e5fc 100%)`,
-        backgroundAttachment: 'fixed'
-      }}
-    >
-      {/* Header Section */}
-      <header 
-        className="w-full shadow-lg py-8"
-        style={{
-          backgroundImage: `linear-gradient(135deg, #e3f2fd 0%, #b3e5fc 100%)`,
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)'
-        }}
-      >
-        {/* Top Bar with Login and Cart */}
-        <div className="max-w-7xl mx-auto px-8 flex justify-end gap-6 mb-6">
-          <LoginPopup />
-          <button className="flex items-center gap-2 text-blue-900 hover:text-blue-700 transition-colors">
-            <span className="text-2xl">🛒</span>
-            <span className="font-semibold">Cart</span>
-          </button>
-        </div>
-
-        {/* Construction Icons */}
-        <div className="flex gap-4 mb-6 text-4xl justify-center">
-          <span>🏗️</span>
-          <span>🔨</span>
-          <span>🛠️</span>
-          <span>⚒️</span>
-        </div>
-        
-        {/* Logo */}
-        <div className="flex items-center justify-center">
-          <h1 
-            className="text-7xl font-black text-blue-900 tracking-wider"
-            style={{
-              textShadow: '3px 3px 0px rgba(0, 0, 0, 0.1), 6px 6px 12px rgba(30, 60, 114, 0.3)',
-              letterSpacing: '0.05em'
-            }}
-          >
-            HOMFLOW
-          </h1>
-        </div>
-      </header>
-
-      {/* Search Box Section */}
-      <div className="w-full bg-white py-6 shadow-md">
-        <div className="max-w-4xl mx-auto px-8">
-          <div className="flex items-center gap-3 bg-gray-100 rounded-full px-6 py-3">
-            <span className="text-2xl">🔍</span>
-            <input 
-              type="text" 
-              placeholder="Search for materials, tools, and more..." 
-              className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-500 text-lg"
-            />
+    <Storefront>
+      <section className="border-b border-blue-100 bg-blue-50/60">
+        <div className="site-container grid items-center gap-10 py-14 sm:py-20 lg:grid-cols-[1.3fr_1fr]">
+          <div>
+            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">Materials for your next project</p>
+            <h1 className="max-w-xl text-4xl font-semibold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+              Build with confidence.<br /><span className="text-blue-700">Source with simplicity.</span>
+            </h1>
+            <p className="mt-5 max-w-lg text-base leading-7 text-slate-600">Explore construction materials and tools, compare products, and find what your project needs. All in one place.</p>
+            <Link href="#catalog" className="primary-button mt-7">Explore the catalog <StoreIcon name="arrow" className="h-4 w-4" /></Link>
           </div>
-        </div>
-      </div>
-
-      {/* Catalog Section (Placeholder for now) */}
-      <section className="flex-1 p-12 bg-white">
-        <h2 className="text-4xl font-bold text-blue-900 mb-12 text-center">Build Your Dream - Shop Materials</h2>
-        
-        {/* Catalog Grid - Dynamically grows based on number of items */}
-        <div className="max-w-7xl mx-auto">
-          {loading ? (
-            <div className="text-center py-12">
-              <p className="text-lg text-gray-600">Loading categories...</p>
-            </div>
-          ) : categories.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-lg text-gray-600">No categories available yet</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {categories.map((category) => (
-                <div 
-                  key={category.id} 
-                  onClick={() => router.push(`/products/${category.id}`)}
-                  className="bg-gray-100 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer"
-                >
-                  <div className="w-full h-40 bg-cover bg-center flex items-center justify-center overflow-hidden relative">
-                    {category.image ? (
-                      <img 
-                        src={category.image} 
-                        alt={category.displayName}
-                        className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl bg-gray-200">
-                        📦
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-4 text-center">
-                    <p className="text-lg font-semibold text-blue-900">{category.displayName}</p>
-                  </div>
+          <div className="rounded-2xl border border-blue-100 bg-white p-7 sm:p-8">
+            <span className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700"><StoreIcon name="box" className="h-6 w-6" /></span>
+            <h2 className="text-xl font-semibold tracking-tight text-slate-900">From planning to building.</h2>
+            <p className="mt-3 text-sm leading-6 text-slate-500">A straightforward way to explore your options, one category at a time.</p>
+            <div className="mt-6 space-y-4 border-t border-slate-100 pt-6">
+              {["Browse materials by category", "Compare prices and specifications", "Choose what works for your project"].map((text, index) => (
+                <div key={text} className="flex items-center gap-3 text-sm text-slate-600">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xs font-semibold text-blue-700">{index + 1}</span>
+                  {text}
                 </div>
               ))}
             </div>
-          )}
+          </div>
         </div>
       </section>
 
-      {/* Footer Section */}
-      <footer 
-        className="w-full py-12 px-8"
-        style={{
-          backgroundImage: `linear-gradient(135deg, #e3f2fd 0%, #b3e5fc 100%)`,
-        }}
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Company Info */}
-            <div className="flex flex-col items-start">
-              <div className="text-5xl mb-4">🏗️</div>
-              <h3 className="text-2xl font-bold text-blue-900 mb-2">HOMFLOW</h3>
-              <p className="text-blue-800 text-sm mb-6">Your trusted partner for all construction materials</p>
-            </div>
-
-            {/* Contact Details */}
-            <div className="flex flex-col justify-start space-y-4">
-              <div className="flex items-start gap-3">
-                <span className="text-xl">📧</span>
-                <div>
-                  <p className="font-semibold text-blue-900">Email</p>
-                  <p className="text-blue-800">info@homflow.com</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <span className="text-xl">📍</span>
-                <div>
-                  <p className="font-semibold text-blue-900">Location</p>
-                  <p className="text-blue-800">Chennai, Tamil Nadu</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <span className="text-xl">📞</span>
-                <div>
-                  <p className="font-semibold text-blue-900">Contact</p>
-                  <p className="text-blue-800">+91 9876543210</p>
-                </div>
-              </div>
-            </div>
+      <section id="catalog" className="site-container scroll-mt-6 py-12 sm:py-16">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">The catalog</p>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Find your materials</h2>
+            <p className="mt-2 text-sm text-slate-500">Start with a category to explore available products.</p>
           </div>
-
-          {/* Divider */}
-          <hr className="my-8 border-blue-300" />
-
-          {/* Copyright */}
-          <div className="text-center text-blue-800 text-sm">
-            <p>&copy; 2026 HOMFLOW. All rights reserved.</p>
-          </div>
+          <label className="search-field w-full sm:w-80">
+            <StoreIcon name="search" />
+            <input type="search" aria-label="Search materials" placeholder="Search materials and tools..." />
+          </label>
         </div>
-      </footer>
-    </main>
+
+        {loading ? (
+          <div role="status" className="loading-state"><span className="loading-spinner" />Loading categories...</div>
+        ) : categories.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center">
+            <StoreIcon name="box" className="mx-auto mb-4 h-8 w-8 text-slate-400" />
+            <h3 className="font-medium text-slate-800">The catalog is on its way</h3>
+            <p className="mt-2 text-sm text-slate-500">No categories available yet. Check back for new materials.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {categories.map((category) => (
+              <Link key={category.id} href={`/products/${category.id}`} className="catalog-card group">
+                <div className="flex aspect-[4/3] items-center justify-center overflow-hidden bg-slate-100">
+                  {category.image ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={category.image} alt={category.displayName} className="h-full w-full object-cover" />
+                  ) : <StoreIcon name="box" className="h-10 w-10 text-slate-300" />}
+                </div>
+                <div className="flex items-center justify-between gap-3 p-5">
+                  <h3 className="font-medium text-slate-900 group-hover:text-blue-700">{category.displayName}</h3>
+                  <StoreIcon name="arrow" className="h-4 w-4 shrink-0 text-blue-700" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+    </Storefront>
   );
 }

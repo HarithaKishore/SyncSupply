@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HOMFLOW - Construction Materials",
+  title: "SyncSupply - Construction Materials",
   description: "Your trusted partner for all construction materials",
 };
 

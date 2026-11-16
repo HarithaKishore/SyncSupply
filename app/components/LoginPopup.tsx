@@ -1,11 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function LoginPopup() {
   const { data: session } = useSession();
   const [showPopup, setShowPopup] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (showPopup && dialog && !dialog.open) {
+      dialog.showModal();
+    }
+  }, [showPopup]);
 
   const handleLogin = async (provider: string) => {
     await signIn(provider, { redirect: false });
@@ -14,88 +22,40 @@ export default function LoginPopup() {
 
   return (
     <>
-      {/* Login Button */}
       {!session ? (
-        <button 
-          onClick={() => setShowPopup(true)}
-          className="flex items-center gap-2 text-blue-900 hover:text-blue-700 transition-colors"
-        >
-          <span className="text-2xl">👤</span>
-          <span className="font-semibold">Login</span>
+        <button onClick={() => setShowPopup(true)} className="min-h-11 px-2 text-sm font-medium text-slate-700 hover:text-blue-700">
+          Sign in
         </button>
       ) : (
-        <div className="flex items-center gap-4">
-          <img 
-            src={session.user?.image || ""} 
-            alt="User" 
-            className="w-8 h-8 rounded-full"
-          />
-          <span className="text-blue-900 font-semibold">{session.user?.name}</span>
-          <button
-            onClick={() => signOut()}
-            className="text-blue-900 hover:text-blue-700 transition-colors text-sm"
-          >
-            Logout
-          </button>
+        <div className="flex items-center gap-3">
+          {session.user?.image && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={session.user.image} alt="" className="h-8 w-8 rounded-full" />
+          )}
+          <span className="hidden max-w-32 truncate text-sm text-slate-700 md:block">{session.user?.name}</span>
+          <button onClick={() => signOut()} className="min-h-11 text-sm font-medium text-slate-600 hover:text-blue-700">Sign out</button>
         </div>
       )}
 
-      {/* Login Popup Modal */}
       {showPopup && !session && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-2xl p-8 w-96">
-            {/* Close Button */}
-            <button
-              onClick={() => setShowPopup(false)}
-              className="float-right text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              ✕
+        <dialog ref={dialogRef} className="signin-dialog" aria-labelledby="signin-title" aria-describedby="signin-description" onCancel={() => setShowPopup(false)} onClose={() => setShowPopup(false)}>
+          <div className="mb-6 flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">Your account</span>
+            <button onClick={() => dialogRef.current?.close()} className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700" aria-label="Close sign-in dialog">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg>
             </button>
-
-            {/* Title */}
-            <h2 className="text-3xl font-bold text-blue-900 mb-2 clear-both">Welcome to HOMFLOW</h2>
-            <p className="text-gray-600 mb-8">Sign in to your account</p>
-
-            {/* Google Login Button */}
-            <button
-              onClick={() => handleLogin("google")}
-              className="w-full bg-white border-2 border-blue-200 text-blue-900 font-semibold py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-3 mb-4"
-            >
-              <span className="text-2xl">🔵</span>
-              Sign in with Google
-            </button>
-
-            {/* Divider */}
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">or</span>
-              </div>
-            </div>
-
-            {/* Email Input (Future use) */}
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 focus:outline-none focus:border-blue-500"
-              disabled
-            />
-
-            <button
-              disabled
-              className="w-full bg-gray-300 text-gray-600 font-semibold py-3 px-4 rounded-lg cursor-not-allowed"
-            >
-              Sign in with Email (Coming Soon)
-            </button>
-
-            {/* Terms */}
-            <p className="text-xs text-gray-500 mt-6 text-center">
-              By signing in, you agree to our Terms of Service and Privacy Policy
-            </p>
           </div>
-        </div>
+          <h2 id="signin-title" className="text-2xl font-semibold tracking-tight text-slate-900">Welcome to SyncSupply</h2>
+          <p id="signin-description" className="mt-3 text-sm leading-6 text-slate-500">Sign in with your Google account to get started.</p>
+          <button onClick={() => handleLogin("google")} className="secondary-button mt-7 w-full py-3">
+            <span className="flex h-5 w-5 items-center justify-center font-semibold text-blue-700" aria-hidden="true">G</span>
+            Continue with Google
+          </button>
+          <div className="mt-6 border-t border-slate-100 pt-5">
+            <p className="text-center text-xs text-slate-500">Email sign-in is coming soon.</p>
+            <p className="mt-4 text-center text-xs leading-5 text-slate-400">By signing in, you agree to our Terms of Service and Privacy Policy.</p>
+          </div>
+        </dialog>
       )}
     </>
   );
